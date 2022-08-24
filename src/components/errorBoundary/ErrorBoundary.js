@@ -1,4 +1,5 @@
-import { Component } from "react";
+import React, { Component } from 'react';
+
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 
@@ -8,7 +9,7 @@ class ErrorBoundary extends Component {
         error: false
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error) {
         this.setState({
             error: true
         })

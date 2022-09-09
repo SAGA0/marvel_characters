@@ -1,54 +1,57 @@
 
-import React, { Component } from "react";
+import { useState } from "react";
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import ComicsList from "../comicsList/ComicsList";
+import AppBanner from '../appBanner/AppBanner'
 
 import decoration from '../../resources/img/vision.png';
 
 
-class App extends Component {
+const App = () => {
 
-    state = {
-        selectedChar: null
+
+    const [selectedChar, setSelectedChar] = useState(null)
+
+
+
+    const onCharSelected = (id) => {
+        setSelectedChar(id)
     }
 
 
 
-    onCharSelected = (id) => {
-        this.setState({
-            selectedChar: id
-        })
-    }
+    return (
+        <div className="app">
+            <AppHeader />
+            <main>
+                {/* <ErrorBoundary>
+                    <RandomChar />
+                </ErrorBoundary> */}
+                {/* <div className="char__content"> */}
 
-
-
-    render() {
-        return (
-            <div className="app">
-                <AppHeader />
-                <main>
-                    <ErrorBoundary>
-                        <RandomChar />
+                {/* <ErrorBoundary>
+                        <CharList onCharSelected={onCharSelected} />
                     </ErrorBoundary>
-                    <div className="char__content">
 
-                        <ErrorBoundary>
-                            <CharList onCharSelected={this.onCharSelected} />
-                        </ErrorBoundary>
+                    <ErrorBoundary>
+                        <CharInfo charId={selectedChar} />
+                    </ErrorBoundary> */}
+                <div className="comics__content">
+                    <AppBanner />
+                    <ComicsList />
+                </div>
 
-                        <ErrorBoundary>
-                            <CharInfo charId={this.state.selectedChar} />
-                        </ErrorBoundary>
 
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision" />
-                </main>
-            </div>
-        )
-    }
+
+                {/* </div> */}
+                <img className="bg-decoration" src={decoration} alt="vision" />
+            </main>
+        </div>
+    )
 }
 
 export default App;

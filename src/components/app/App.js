@@ -1,56 +1,41 @@
-
-import { useState } from "react";
+import { lazy, Suspence } from "react";
+import Spinner from "../spinner/Spinner";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+// import { MainPage, ComicsPage, Page404, SingleComicPage } from '../pages';
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import ComicsList from "../comicsList/ComicsList";
-import AppBanner from '../appBanner/AppBanner'
+import AppBanner from "../appBanner/AppBanner";
 
-import decoration from '../../resources/img/vision.png';
+const MainPage = lazy(() => import('../pages/MainPage'));
+const ComicsPage = lazy(() => import('../pages/ComicsPage'));
+const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
+const Page404 = lazy(() => import('../pages/Page404'));
+
+
+
 
 
 const App = () => {
 
 
-    const [selectedChar, setSelectedChar] = useState(null)
-
-
-
-    const onCharSelected = (id) => {
-        setSelectedChar(id)
-    }
-
-
-
     return (
-        <div className="app">
-            <AppHeader />
-            <main>
-                {/* <ErrorBoundary>
-                    <RandomChar />
-                </ErrorBoundary> */}
-                {/* <div className="char__content"> */}
-
-                {/* <ErrorBoundary>
-                        <CharList onCharSelected={onCharSelected} />
-                    </ErrorBoundary>
-
-                    <ErrorBoundary>
-                        <CharInfo charId={selectedChar} />
-                    </ErrorBoundary> */}
-                <div className="comics__content">
-                    <AppBanner />
-                    <ComicsList />
-                </div>
-
-
-
-                {/* </div> */}
-                <img className="bg-decoration" src={decoration} alt="vision" />
-            </main>
-        </div>
+        <Router>
+            <div className="app">
+                <main>
+                    <Suspence fallback={<span>Loading...</span>}>
+                        <Routes>
+                            <Route element={<AppHeader />}>
+                                <Route path="/" element={<MainPage />} />
+                                <Route element={<AppBanner />}>
+                                    <Route path="/comics" element={<ComicsPage />} />
+                                    <Route path="/comics/:comicId" element={<SingleComicPage />} />
+                                </Route>
+                                <Route path="*" element={< Page404 />} />
+                            </Route>
+                        </Routes>
+                    </Suspence>
+                </main>
+            </div>
+        </Router >
     )
 }
 

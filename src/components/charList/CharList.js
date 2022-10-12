@@ -6,6 +6,28 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 
+const setContent = (process, Component, newItemLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner />;
+            break;
+        case 'loading':
+            return newItemLoading ? <Component /> : <Spinner />
+            break;
+        case 'confirmed':
+            return <Component />
+            break;
+        case 'error':
+            return <ErrorMessage />
+            break
+        default:
+            throw new Error('Unexpecting data')
+
+    }
+
+}
+
+
 const CharList = (props) => {
 
 
@@ -15,7 +37,7 @@ const CharList = (props) => {
     const [charEnded, setCharEnded] = useState(false)
 
 
-    const { loading, error, getAllCharacters, clearError } = useMarvelService()
+    const { getAllCharacters, clearError, process, setProcess } = useMarvelService()
 
 
 
@@ -53,19 +75,20 @@ const CharList = (props) => {
         initial ? setNewItemLoading(false) : setNewItemLoading(true)
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
 
-    const onCharListLoaded = (newCharList) => {
+    const onCharListLoaded = async (newCharList) => {
         let ended = false;
         if (newCharList < 9) {
             ended = true
         }
 
         setCharList(charList => [...charList, ...newCharList])
-        setNewItemLoading(newItemLoading => false)
+        setNewItemLoading(false)
         setOffset(offset => offset + 9)
-        setCharEnded(charEnded => ended)
+        setCharEnded(ended)
 
     }
 
@@ -116,16 +139,11 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItms(charList)
 
-    const errorMsg = error ? <ErrorMessage /> : null
-    const spinner = loading && !newItemLoading ? <Spinner /> : null
 
     return (
         <div className="char__list" >
-            {errorMsg}
-            {spinner}
-            {items}
+            {setContent(process, () => renderItms(charList), newItemLoading)}
             <button className="button button__main button__long"
                 disabled={newItemLoading}
                 style={{ 'display': charEnded ? 'none' : 'block' }}

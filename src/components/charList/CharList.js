@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -139,11 +139,13 @@ const CharList = (props) => {
         )
     }
 
-
+    const element = useMemo(() => {
+        return setContent(process, () => renderItms(charList), newItemLoading)
+    }, [process])
 
     return (
         <div className="char__list" >
-            {setContent(process, () => renderItms(charList), newItemLoading)}
+            {element}
             <button className="button button__main button__long"
                 disabled={newItemLoading}
                 style={{ 'display': charEnded ? 'none' : 'block' }}
